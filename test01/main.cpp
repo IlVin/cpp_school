@@ -118,11 +118,14 @@ int main(int argc, char *argv[]) {
         if (std::string(argv[1]) != "-n")
             return -1;
         N = std::stoi(argv[2]);
+        if (N == 0)
+            N = 3;
         ifn = argv[3];
         ofn = argv[4];
     } else if (argc == 3) {
         ifn = argv[1];
         ofn = argv[2];
+        N = 3;
     } else {
         return -1;
     }
