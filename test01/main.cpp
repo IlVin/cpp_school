@@ -17,6 +17,10 @@ struct DomPath {
 using DpVector = std::vector<DomPath>;
 using DpPair = std::pair<std::string, int>;
 
+void ToLower(std::string& str){
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
 int isHttp(std::string str) {
     if (str.substr(0, 4) == "http")
         return 4;
@@ -83,6 +87,7 @@ void FindDomPath (std::string str, DpVector& DP) {
                     if (cnt > 0) {
                         DomPath dp;
                         dp.Domain = std::string(str, 0, cnt);
+                        ToLower(dp.Domain);
                         str = std::string(str,cnt);
                         cnt = CntPathChars(str);
                         if (cnt > 0 && str[0] == '/') {
