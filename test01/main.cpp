@@ -10,7 +10,6 @@
 
 
 struct DomPath {
-    bool isComplete;
     std::string Domain;
     std::string Path;
 };
@@ -69,35 +68,37 @@ int CntPathChars(std::string str) {
     return i;
 }
 
-void GetDomPath (std::string str, DpVector& DP) {
-    DomPath dp;
+void FindDomPath (std::string str, DpVector& DP) {
+
+    int pos, cnt;
     do {
-        dp.isComplete = false;
-        int pos = str.find("http");
-        int cnt;
-        if (pos != std::string::npos && (pos == 0 || str[pos-1] == ' ')) {
-            str = std::string(str, pos);
-            cnt = CntUrlPrefix(str);
-            if (cnt > 0) {
-                str = std::string(str, cnt);
-                cnt = CntDomainChars(str);
+        pos = str.find("http");
+        if (pos != std::string::npos) {
+            if (pos == 0 || str[pos-1] == ' ') {
+                str = std::string(str, pos);
+                cnt = CntUrlPrefix(str);
                 if (cnt > 0) {
-                    dp.Domain = std::string(str, 0, cnt);
-                    str = std::string(str,cnt);
-                    cnt = CntPathChars(str);
-                    if (cnt > 0 && str[0] == '/') {
-                        dp.Path = std::string(str, 0, cnt);
-                        dp.isComplete = true;
-                    } else {
-                        dp.Path = '/';
-                        dp.isComplete = true;
-                    }
-                    DP.push_back(dp);
                     str = std::string(str, cnt);
+                    cnt = CntDomainChars(str);
+                    if (cnt > 0) {
+                        DomPath dp;
+                        dp.Domain = std::string(str, 0, cnt);
+                        str = std::string(str,cnt);
+                        cnt = CntPathChars(str);
+                        if (cnt > 0 && str[0] == '/') {
+                            dp.Path = std::string(str, 0, cnt);
+                            str = std::string(str, cnt);
+                        } else {
+                            dp.Path = '/';
+                        }
+                        DP.push_back(dp);
+                        continue;
+                    }
                 }
             }
+            str = std::string(str, pos + 4);
         }
-    } while(dp.isComplete);
+    } while (pos != std::string::npos);
 }
 
 int main(int argc, char *argv[]) {
@@ -136,7 +137,7 @@ int main(int argc, char *argv[]) {
     while (!ifs.eof()) {
         getline(ifs, buf);
         DpVector DP;
-        GetDomPath(buf, DP);
+        FindDomPath(buf, DP);
         for (const auto& dp: DP) {
             urls_cnt++;
             domains[dp.Domain]++;
