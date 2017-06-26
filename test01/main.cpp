@@ -95,6 +95,8 @@ void FindDomPath (std::string str, DpVector& DP) {
                         continue;
                     }
                 }
+                str = std::string(str, 4);
+                continue;
             }
             str = std::string(str, pos + 4);
         }
