@@ -1,1 +1,3 @@
+# Run & Go
+
 cmake .. && make
